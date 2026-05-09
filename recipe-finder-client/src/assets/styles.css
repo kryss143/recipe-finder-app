@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  theme: forest;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
