@@ -40,8 +40,13 @@ export const loginUser = async ({ email, password }) => {
 };
 
 export const logoutUser = async () => {
-  await api.post("/logout", null, { headers: getAuthHeaders() });
-  clearSession();
+  try {
+    await api.post("/logout", null, { headers: getAuthHeaders() });
+  } catch {
+    // Local logout should still complete if the server session is already invalid.
+  } finally {
+    clearSession();
+  }
 };
 
 export const getCurrentUser = () => {
