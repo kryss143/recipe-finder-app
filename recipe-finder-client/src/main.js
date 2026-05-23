@@ -1,4 +1,3 @@
-import "./lib/parse";
 import "./assets/styles.css";
 
 import { createApp } from "vue";
