@@ -1,28 +1,29 @@
-import axios from 'axios';
+import axios from "axios";
 
-const SERVER_URL = import.meta.env.VITE_BACK4APP_SERVER_URL || 'https://parseapi.back4app.com/';
+const SERVER_URL =
+  import.meta.env.VITE_BACK4APP_SERVER_URL || "https://parseapi.back4app.com/";
 const APP_ID = import.meta.env.VITE_BACK4APP_APP_ID;
-const REST_KEY = import.meta.env.VITE_BACK4APP_REST_KEY || import.meta.env.VITE_BACK4APP_JS_KEY;
+const REST_KEY = import.meta.env.VITE_BACK4APP_REST_KEY;
 
-const STORAGE_USER_KEY = 'parse_current_user';
-const STORAGE_SESSION_KEY = 'parse_session_token';
+const STORAGE_USER_KEY = "parse_current_user";
+const STORAGE_SESSION_KEY = "parse_session_token";
 
 const api = axios.create({
   baseURL: SERVER_URL,
   headers: {
-    'X-Parse-Application-Id': APP_ID,
-    ...(REST_KEY ? { 'X-Parse-REST-API-Key': REST_KEY } : {}),
-    'Content-Type': 'application/json',
+    "X-Parse-Application-Id": APP_ID,
+    ...(REST_KEY ? { "X-Parse-REST-API-Key": REST_KEY } : {}),
+    "Content-Type": "application/json",
   },
 });
 
 export function getAuthHeaders() {
   const sessionToken = localStorage.getItem(STORAGE_SESSION_KEY);
   const headers = {
-    'X-Parse-Application-Id': APP_ID,
-    ...(REST_KEY ? { 'X-Parse-REST-API-Key': REST_KEY } : {}),
+    "X-Parse-Application-Id": APP_ID,
+    ...(REST_KEY ? { "X-Parse-REST-API-Key": REST_KEY } : {}),
   };
-  if (sessionToken) headers['X-Parse-Session-Token'] = sessionToken;
+  if (sessionToken) headers["X-Parse-Session-Token"] = sessionToken;
   return headers;
 }
 
@@ -39,6 +40,31 @@ export function clearSession() {
 export function getCurrentUser() {
   const raw = localStorage.getItem(STORAGE_USER_KEY);
   return raw ? JSON.parse(raw) : null;
+}
+
+const AUTH_ERROR_MESSAGES = {
+  101: "Invalid email or password.",
+  125: "Please enter a valid email address.",
+  200: "Username is required.",
+  201: "Password is required.",
+  202: "That username is already taken.",
+  203: "That email is already registered.",
+  204: "Email is required.",
+};
+
+export function getAuthErrorMessage(
+  error,
+  fallback = "Something went wrong. Please try again.",
+) {
+  const code = error?.response?.data?.code;
+  const status = error?.response?.status;
+  const serverMessage = error?.response?.data?.error;
+
+  if (status === 403) {
+    return "Registration is forbidden. Check your Back4App Application ID and REST API Key.";
+  }
+
+  return AUTH_ERROR_MESSAGES[code] || serverMessage || fallback;
 }
 
 export default api;
