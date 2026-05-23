@@ -9,6 +9,7 @@ import router from "./router";
 
 const app = createApp(App);
 
+// Global properties
 app.use(createPinia());
 app.use(router);
 
