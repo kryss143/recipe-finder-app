@@ -12,7 +12,11 @@ export const useAuthStore = defineStore("auth", {
   }),
   getters: {
     isAuthenticated: (state) => !!state.user,
-    username: (state) => state.user?.get("username") || "",
+    username: (state) => {
+      if (!state.user) return "";
+      if (typeof state.user.get === "function") return state.user.get("username") || "";
+      return state.user.username || state.user.email || "";
+    },
   },
   actions: {
     async login(credentials) {
