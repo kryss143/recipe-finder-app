@@ -12,20 +12,20 @@
     <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
       <div
         v-for="fav in favStore.favorites"
-        :key="fav.id"
+        :key="favoriteValue(fav, 'objectId')"
         class="bg-white rounded-xl shadow overflow-hidden"
       >
         <img
-          :src="fav.get('mealThumb')"
+          :src="favoriteValue(fav, 'mealThumb')"
           class="w-full h-40 object-cover cursor-pointer"
-          @click="$router.push(`/recipe/${fav.get('mealId')}`)"
+          @click="$router.push(`/recipe/${favoriteValue(fav, 'mealId')}`)"
         />
         <div class="p-3 flex justify-between items-center">
           <span class="font-medium text-gray-500 text-sm truncate">{{
-            fav.get("mealName")
+            favoriteValue(fav, "mealName")
           }}</span>
           <button
-            @click="favStore.remove(fav.get('mealId'))"
+            @click="favStore.remove(favoriteValue(fav, 'mealId'))"
             class="text-red-400 hover:text-red-600 ml-2 text-sm font-bold"
           >
             ✕
@@ -40,5 +40,9 @@
 import { onMounted } from "vue";
 import { useFavoriteStore } from "../stores/favoriteStore";
 const favStore = useFavoriteStore();
+const favoriteValue = (favorite, key) => {
+  if (typeof favorite?.get === "function") return favorite.get(key);
+  return favorite?.[key];
+};
 onMounted(() => favStore.fetch());
 </script>

@@ -5,11 +5,16 @@ import {
   removeFavorite,
 } from "../services/favoriteService";
 
+const getFavoriteValue = (favorite, key) => {
+  if (typeof favorite?.get === "function") return favorite.get(key);
+  return favorite?.[key];
+};
+
 export const useFavoriteStore = defineStore("favorites", {
   state: () => ({ favorites: [] }),
   getters: {
     isFavorite: (state) => (mealId) =>
-      state.favorites.some((f) => f.get("mealId") === mealId),
+      state.favorites.some((favorite) => getFavoriteValue(favorite, "mealId") === mealId),
   },
   actions: {
     async fetch() {
@@ -21,7 +26,9 @@ export const useFavoriteStore = defineStore("favorites", {
     },
     async remove(mealId) {
       await removeFavorite(mealId);
-      this.favorites = this.favorites.filter((f) => f.get("mealId") !== mealId);
+      this.favorites = this.favorites.filter(
+        (favorite) => getFavoriteValue(favorite, "mealId") !== mealId,
+      );
     },
   },
 });

@@ -31,7 +31,7 @@ export const addFavorite = async ({ mealId, mealName, mealThumb }) => {
   const res = await api.post(`${classPath}`, body, {
     headers: getAuthHeaders(),
   });
-  return res.data;
+  return { ...body, ...res.data };
 };
 
 export const removeFavorite = async (mealId) => {
