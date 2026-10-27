@@ -3,6 +3,5 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
-  "framework": null,
-  "functions": { "api/**/*.js": { "runtime": "nodejs22.x" } }
+  "framework": null
 }
