@@ -4,6 +4,5 @@
   "installCommand": "npm install",
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "framework": null,
-  "functions": { "api/**/*.js": { "runtime": "nodejs22.x" } },
-  "engines": { "node": "22.23.4" }
+  "functions": { "api/**/*.js": { "runtime": "nodejs22.x" } }
 }
